@@ -21,7 +21,7 @@ namespace Quorum
 
         static void Main(string[] args)
         {
-            Log.Info("Quorum version {0}", FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
+            Log.Info("Quorum version {0}", Utilities.GetVersion());
 
             var config_location = args.LastOrDefault() ?? "config.json";
             Config.Load(config_location);
@@ -40,7 +40,6 @@ namespace Quorum
             Log.Info("Starting Quorum host, type: {0}", host_type);
 
             HostMappings[host_type]();
-            Thread.Sleep(-1);
         }
 
         static void StartSelfHosting()
@@ -57,6 +56,8 @@ namespace Quorum
             {
                 host.Start();
                 Log.Info("Listening on {0}", uri);
+
+                Thread.Sleep(-1);
             }
         }
     }
