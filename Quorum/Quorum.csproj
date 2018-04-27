@@ -48,5 +48,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nancy\src\Nancy.Hosting.Self.MSBuild\Nancy.Hosting.Self.csproj">
+      <Project>{aa7f66eb-ec2c-47de-855f-30b3e6ef2134}</Project>
+      <Name>Nancy.Hosting.Self</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nancy\src\Nancy.MSBuild\Nancy.csproj">
+      <Project>{34576216-0dca-4b0f-a0dc-9075e75a676f}</Project>
+      <Name>Nancy</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
