@@ -37,6 +37,9 @@ namespace Quorum
                 return;
             }
 
+            AuthenticationManager.MainSessionProvider = new DummySessionProvider();
+
+            Log.Info("Created ISessionProvider");
             Log.Info("Starting Quorum host, type: {0}", host_type);
 
             HostMappings[host_type]();
