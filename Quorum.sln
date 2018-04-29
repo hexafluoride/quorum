@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy", "nancy\src\Nancy.MS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.Hosting.Self", "nancy\src\Nancy.Hosting.Self.MSBuild\Nancy.Hosting.Self.csproj", "{AA7F66EB-EC2C-47DE-855F-30B3E6EF2134}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.ViewEngines.Razor", "nancy\src\Nancy.ViewEngines.Razor.MSBuild\Nancy.ViewEngines.Razor.csproj", "{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{AA7F66EB-EC2C-47DE-855F-30B3E6EF2134}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
 		{AA7F66EB-EC2C-47DE-855F-30B3E6EF2134}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA7F66EB-EC2C-47DE-855F-30B3E6EF2134}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.MonoDebug|Any CPU.ActiveCfg = MonoDebug|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.MonoDebug|Any CPU.Build.0 = MonoDebug|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6F51DF-015C-4DB6-B44C-0E5E4F25E2A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
