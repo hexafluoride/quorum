@@ -1,0 +1,31 @@
+﻿@inherits Quorum.QuorumRazorViewBase
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Sign in to @ForumName</title>
+
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/signin.css" rel="stylesheet">
+</head>
+
+<body>
+    <form class="form-signin" action="/login" method="POST">
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-3 font-weight-normal">@ForumName</h1>
+            <p>Please sign in.</p>
+        </div>
+
+        <div class="form-label-group">
+            <input type="text" id="inputUsername" class="form-control" placeholder="Username" name="username" required autofocus>
+            <label for="inputUsername">Username</label>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <p class="mt-5 mb-3 text-muted text-center">Quorum @QuorumVersion</p>
+    </form>
+</body>
+</html>

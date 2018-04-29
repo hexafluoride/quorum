@@ -1,5 +1,7 @@
 {
   "host.type": "self",
   "host.address": "localhost",
-  "host.port": 4420
+  "host.port": 4420,
+
+  "forum.name": "Quorum Example Forum"
 }

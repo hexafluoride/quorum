@@ -13,9 +13,17 @@ namespace Quorum
         public MainModule()
         {
             AuthenticationManager.EnableAuthentication(this);
+            
+            AddGetHandler("/", "index");
+            AddGetHandler("/login", "login");
+        }
 
-            Get("/", _ => {
-                return string.Format("This is Quorum {0} saying hi! You are: {1}", Utilities.GetVersion(), this.Context.CurrentUser?.Identity?.Name); });
+        public void AddGetHandler(string path, string view)
+        {
+            Get(path, _ => 
+            {
+                return View[view, new { Navbar = Navbar.Build(path), User = ((User)Context.CurrentUser) }];
+            });
         }
     }
 }

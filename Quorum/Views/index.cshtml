@@ -1,0 +1,18 @@
+﻿@inherits Quorum.QuorumRazorViewBase
+
+@{
+    Layout = "master.cshtml";
+}
+
+@if (Session != null)
+{
+    <p>You're logged in. Your username is @(Session.User). and your session ID is @(Session.Id). <a href="/logout">Log out</a></p>
+}
+else
+{
+    <p>You're not logged in. Please log in <a href="/login">here</a>.</p>
+}
+
+@section Head {}
+@section ManualContent {}
+@section Scripts {}

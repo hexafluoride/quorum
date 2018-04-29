@@ -1,0 +1,80 @@
+﻿@inherits Quorum.QuorumRazorViewBase
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/open-iconic-bootstrap.css">
+    <style>
+        body {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            margin-top: 1rem;
+        }
+
+        h2, h3 {
+            margin-top: 2rem;
+        }
+
+        .row {
+            margin-bottom: 1rem;
+        }
+
+            .row .row {
+                margin-top: 1rem;
+                margin-bottom: 0;
+            }
+
+        [class*="col-"] {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            background-color: rgba(86, 61, 124, .15);
+            border: 1px solid rgba(86, 61, 124, .2);
+        }
+
+        hr {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+    @RenderSection("Head")
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">@ForumName</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        @foreach (var item in Model.Navbar) {
+                            <li class="nav-item @(item.Active ? "active" : "")">
+                                <a class="nav-link" href="@item.Path">@item.Name @Html.Raw(item.Active ? "<span class=\"sr-only\">(current)</span>" : "")</a>
+                            </li>
+                        }
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0" action="/search" method="POST">
+                        <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+        </nav>
+        <h1>Welcome to Quorum</h1>
+        @RenderBody()
+    </div>
+    @RenderSection("ManualContent")
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+    <script src="/assets/js/bootstrap.min.js"></script>
+    @RenderSection("Scripts")
+</body>
+</html>
