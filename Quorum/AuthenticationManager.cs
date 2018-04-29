@@ -13,6 +13,7 @@ namespace Quorum
     public class AuthenticationManager
     {
         public static ISessionProvider MainSessionProvider;
+        public static IUserProvider MainUserProvider;
 
         public static void EnableAuthentication(NancyModule module, ISessionProvider provider = null)
         {

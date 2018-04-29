@@ -1,11 +1,9 @@
-﻿:root {
-    --input-padding-x: .75rem;
-    --input-padding-y: .75rem;
-}
-
-html,
+﻿html,
 body {
     height: 100%;
+
+    --input-padding-x: .75rem;
+    --input-padding-y: .75rem;
 }
 
 body {

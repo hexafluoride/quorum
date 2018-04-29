@@ -1,5 +1,7 @@
 ﻿using Nancy.Hosting.Self;
+using Newtonsoft.Json.Linq;
 using NLog;
+using Quorum.Database.Postgres;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,9 +39,24 @@ namespace Quorum
                 return;
             }
 
-            AuthenticationManager.MainSessionProvider = new DummySessionProvider();
+            var database_type = Config.GetString("database.type");
 
-            Log.Info("Created ISessionProvider");
+            switch(database_type)
+            {
+                case "postgres":
+                    var db = new PostgresDatabase(Config.GetValue<JObject>("database"));
+                    AuthenticationManager.MainSessionProvider = db.SessionProvider;
+                    AuthenticationManager.MainUserProvider = db.UserProvider;
+                    break;
+                case "":
+                    Log.Error("Please specify a database type and options using \"database.type\" and \"database\" in the configuration.");
+                    return;
+                default:
+                    Log.Error("Unknown database type \"\"", database_type);
+                    return;
+            }
+
+            Log.Info("Connected to {0} database", database_type);
             Log.Info("Starting Quorum host, type: {0}", host_type);
 
             HostMappings[host_type]();

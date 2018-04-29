@@ -10,14 +10,19 @@ namespace Quorum
 {
     public class User : ClaimsPrincipal
     {
-        public User(string name)
+        public string Username { get => FindFirst("Username")?.Value; }
+
+        public User(string name, string auth_type, string identifier)
         {
-            AddIdentity(new GenericIdentity(name));
+            var identity = new ClaimsIdentity(new GenericIdentity(identifier, auth_type));
+            identity.AddClaim(new Claim("Username", name));
+
+            AddIdentity(identity);
         }
 
         public override string ToString()
         {
-            return Identity.Name;
+            return Username;
         }
     }
 }

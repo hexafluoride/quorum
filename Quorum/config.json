@@ -3,5 +3,10 @@
   "host.address": "localhost",
   "host.port": 4420,
 
-  "forum.name": "Quorum Example Forum"
+  "forum.name": "Quorum Example Forum",
+
+  "database.type": "postgres",
+  "database": {
+    "connection.string": "Host=localhost;Username=quorum_user;Password=jaEYXScMHi7XjsJo;Database=quorum"
+  }
 }

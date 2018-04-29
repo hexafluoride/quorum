@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using Quorum.Database.Postgres;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,6 @@ namespace Quorum
 {
     public class SessionModule : NancyModule
     {
-        // TODO: Finish implementing IUserProvider and use it to authenticate users in this module
-
-        public Dictionary<string, User> Users = new Dictionary<string, User>()
-        {
-            {"admin", new User("admin") },
-            {"user", new User("user") }
-        };
-
         public SessionModule()
         {
             AuthenticationManager.EnableAuthentication(this); // TODO: Manage ISessionProviders separately
@@ -25,6 +18,40 @@ namespace Quorum
 
             Get("/logout", _ => HandleLogout());
             Post("/logout", _ => HandleLogout());
+
+            Post("/register", _ => HandleRegistration());
+        }
+
+        public async Task<object> HandleRegistration()
+        {
+            string error_redirect = Request.Form["error_redirect"].Value ?? "/";
+            string success_redirect = Request.Form["success_redirect"].Value ?? "/";
+
+            string username = Request.Form["username"].Value ?? "";
+            string password = Request.Form["password"].Value ?? "";
+            string email = Request.Form["email"].Value ?? "";
+
+            try
+            {
+                if (Context.Items.ContainsKey("session"))
+                    return Response.AsRedirect(error_redirect);
+
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                    return Response.AsRedirect(error_redirect);
+
+                var real_provider = (AuthenticationManager.MainUserProvider as PostgresUserProvider); // code smell here
+
+                real_provider.CreateUser(username, password, email);
+                //var user = real_provider.AttemptAuthenticate(username, password);
+
+                var session = AuthenticationManager.MainSessionProvider.CreateSession(real_provider.AttemptAuthenticate(username, password));
+                return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);
+
+            }
+            catch (Exception ex)
+            {
+                return Response.AsRedirect(error_redirect);
+            }
         }
 
         public async Task<object> HandleLogout()
@@ -56,6 +83,7 @@ namespace Quorum
             string success_redirect = Request.Form["success_redirect"].Value ?? "/";
 
             string username = Request.Form["username"].Value ?? "";
+            string password = Request.Form["password"].Value ?? "";
 
             try
             {
@@ -64,18 +92,21 @@ namespace Quorum
                     AuthenticationManager.MainSessionProvider.DestroySession(Context.Items["session"] as Session);
                 }
 
-                if(Users.ContainsKey(username))
-                {
-                    var session = AuthenticationManager.MainSessionProvider.CreateSession(Users[username]);
-                    return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);
-                }
+                var real_provider = (AuthenticationManager.MainUserProvider as PostgresUserProvider); // code smell here
+
+                var user = real_provider.AttemptAuthenticate(username, password);
+
+                if (user == null)
+                    throw new Exception("Failed to authenticate.");
+
+                var session = AuthenticationManager.MainSessionProvider.CreateSession(user);
+                return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);
+
             }
             catch (Exception ex)
             {
-                return Response.AsRedirect(error_redirect);
+                return Response.AsRedirect(error_redirect + "?error=" + ex.Message);
             }
-
-            return Response.AsRedirect(error_redirect);
         }
     }
 }

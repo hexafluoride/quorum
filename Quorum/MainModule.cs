@@ -16,6 +16,7 @@ namespace Quorum
             
             AddGetHandler("/", "index");
             AddGetHandler("/login", "login");
+            AddGetHandler("/register", "register");
         }
 
         public void AddGetHandler(string path, string view)

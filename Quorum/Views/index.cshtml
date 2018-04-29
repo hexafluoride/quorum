@@ -1,4 +1,6 @@
 ﻿@inherits Quorum.QuorumRazorViewBase
+@using System.Security.Principal
+@using System.Security.Claims
 
 @{
     Layout = "master.cshtml";
@@ -6,7 +8,7 @@
 
 @if (Session != null)
 {
-    <p>You're logged in. Your username is @(Session.User). and your session ID is @(Session.Id). <a href="/logout">Log out</a></p>
+    <p>You're logged in. Your username is @(Session.User), and your session ID is @(Session.Id). You're authenticated by the provider <code>@Session.User.Identity.AuthenticationType</code>.</p>
 }
 else
 {

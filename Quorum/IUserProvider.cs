@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Quorum
 {
-    interface IUserProvider
+    public interface IUserProvider
     {
         // TODO: Declare an interface that allows authentication of various user providers (plain old username/password login, OpenID, etc.)
 
         User RetrieveUser(string identifier);
+
     }
 }
