@@ -42,7 +42,6 @@ namespace Quorum
                 var real_provider = (AuthenticationManager.MainUserProvider as PostgresUserProvider); // code smell here
 
                 real_provider.CreateUser(username, password, email);
-                //var user = real_provider.AttemptAuthenticate(username, password);
 
                 var session = AuthenticationManager.MainSessionProvider.CreateSession(real_provider.AttemptAuthenticate(username, password));
                 return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);

@@ -23,7 +23,7 @@ namespace Quorum
         {
             Get(path, _ => 
             {
-                return View[view, new { Navbar = Navbar.Build(path), User = ((User)Context.CurrentUser) }];
+                return View[view, new { Navbar = Navbar.Build(Context), User = ((User)Context.CurrentUser) }];
             });
         }
     }

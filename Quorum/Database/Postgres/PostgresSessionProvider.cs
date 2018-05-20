@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
+using Quorum.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Quorum.Database.Postgres
         {
             var session = new Session(user);
             
-            var command = new NpgsqlCommand("INSERT INTO sessions VALUES(@id, @method, @identifier, @created, @expires)", Database.Connection);
+            var command = new NpgsqlCommand("INSERT INTO sessions VALUES(@id, @method, @identifier, @created, @expires)");
 
             command.Parameters.Add(new NpgsqlParameter("@id", session.Id));
             command.Parameters.Add(new NpgsqlParameter("@method", "local"));
@@ -29,7 +30,7 @@ namespace Quorum.Database.Postgres
             command.Parameters.Add(new NpgsqlParameter("@created", session.Created));
             command.Parameters.Add(new NpgsqlParameter("@expires", session.ValidUntil));
 
-            var added = command.ExecuteNonQuery();
+            var added = Database.ExecuteNonQuery(command);
 
             if (added != 1)
                 throw new Exception("Inserted " + added + " rows, expected 1");
@@ -39,11 +40,11 @@ namespace Quorum.Database.Postgres
 
         public void DestroySession(Session session)
         {
-            var command = new NpgsqlCommand("DELETE FROM sessions WHERE id = @id", Database.Connection);
+            var command = new NpgsqlCommand("DELETE FROM sessions WHERE id = @id");
 
             command.Parameters.Add(new NpgsqlParameter("@id", session.Id));
 
-            var added = command.ExecuteNonQuery();
+            var added = Database.ExecuteNonQuery(command);
 
             if (added != 1)
                 throw new Exception("Deleted " + added + " rows, expected 1");
@@ -51,14 +52,14 @@ namespace Quorum.Database.Postgres
 
         public Session RetrieveSession(string session_id)
         {
-            var command = new NpgsqlCommand("SELECT * FROM sessions WHERE id = @id", Database.Connection);
+            var command = new NpgsqlCommand("SELECT * FROM sessions WHERE id = @id");
 
             command.Parameters.Add(new NpgsqlParameter("@id", session_id));
 
             string username = "";
             Session session = new Session();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = Database.ExecuteReader(command))
             {
                 if (!reader.HasRows)
                     return null;
@@ -71,12 +72,10 @@ namespace Quorum.Database.Postgres
                 }
 
                 session.Id = session_id;
-                username = reader.GetString(2);
+                session.User = Database.UserProvider.RetrieveUser(reader.GetString(2));
                 session.Created = reader.GetDateTime(3);
                 session.ValidUntil = reader.GetDateTime(4);
             }
-
-            session.User = Database.UserProvider.RetrieveUser(username);
 
             return session;
         }

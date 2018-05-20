@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using Quorum.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,10 @@ namespace Quorum.Database.Postgres
                 throw new Exception("Unexpected user identifier " + identifier);
             }
 
-            var command = new NpgsqlCommand("SELECT * FROM users WHERE id = @id", Database.Connection);
+            var command = new NpgsqlCommand("SELECT * FROM users WHERE id = @id");
 
             command.Parameters.Add(new NpgsqlParameter("@id", id));
-            using (var reader = command.ExecuteReader())
+            using (var reader = Database.ExecuteReader(command))
             {
                 if (!reader.HasRows)
                     throw new Exception("Couldn't find user for identifier " + id);
@@ -39,10 +40,10 @@ namespace Quorum.Database.Postgres
 
         public User FindUserByUsername(string username)
         {
-            var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", Database.Connection);
+            var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username");
 
             command.Parameters.Add(new NpgsqlParameter("@username", username));
-            using (var reader = command.ExecuteReader())
+            using (var reader = Database.ExecuteReader(command))
             {
                 if (!reader.HasRows)
                     return null;
@@ -57,10 +58,10 @@ namespace Quorum.Database.Postgres
 
         public User AttemptAuthenticate(string username, string password)
         {
-            var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", Database.Connection);
+            var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username");
 
             command.Parameters.Add(new NpgsqlParameter("@username", username));
-            using (var reader = command.ExecuteReader())
+            using (var reader = Database.ExecuteReader(command))
             {
                 if (!reader.HasRows)
                     return null;
@@ -81,13 +82,13 @@ namespace Quorum.Database.Postgres
             if (FindUserByUsername(username) != null)
                 throw new Exception("User already exists.");
 
-            var command = new NpgsqlCommand("INSERT INTO users VALUES(@username, @password, @email)", Database.Connection);
+            var command = new NpgsqlCommand("INSERT INTO users VALUES(@username, @password, @email)");
             
             command.Parameters.Add(new NpgsqlParameter("@username", username));
             command.Parameters.Add(new NpgsqlParameter("@password", Pbkdf2CryptConverter.Encrypt(password)));
             command.Parameters.Add(new NpgsqlParameter("@email", email));
 
-            var added = command.ExecuteNonQuery();
+            var added = Database.ExecuteNonQuery(command);
 
             if (added != 1)
                 throw new Exception("Inserted " + added + " rows, expected 1");

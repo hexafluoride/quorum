@@ -1,4 +1,6 @@
 ﻿@inherits Quorum.QuorumRazorViewBase
+@using Quorum
+@using System.Linq
 
 <!DOCTYPE html>
 
@@ -55,16 +57,24 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        @foreach (var item in Model.Navbar) {
+                        @foreach (var item in ((NavbarElement[])Model.Navbar).Where(i => i.Alignment == NavbarElementAlignment.Left)) {
                             <li class="nav-item @(item.Active ? "active" : "")">
                                 <a class="nav-link" href="@item.Path">@item.Name @Html.Raw(item.Active ? "<span class=\"sr-only\">(current)</span>" : "")</a>
                             </li>
                         }
                     </ul>
-                    <form class="form-inline my-2 my-lg-0" action="/search" method="POST">
+                    <!--<form class="form-inline my-2 my-lg-0" action="/search" method="POST">
                         <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+                    </form>-->
+                    <ul class="navbar-nav ml-md-auto">
+                        @foreach (var item in ((NavbarElement[])Model.Navbar).Where(i => i.Alignment == NavbarElementAlignment.Right))
+                        {
+                            <li class="nav-item @(item.Active ? "active" : "")">
+                                <a class="nav-link" href="@item.Path">@item.Name @Html.Raw(item.Active ? "<span class=\"sr-only\">(current)</span>" : "")</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
         </nav>
         <h1>Welcome to Quorum</h1>
