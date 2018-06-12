@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using NLog;
 using Quorum.Database.Postgres;
+using Quorum.Providers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,8 +46,10 @@ namespace Quorum
             {
                 case "postgres":
                     var db = new PostgresDatabase(Config.GetValue<JObject>("database"));
-                    AuthenticationManager.MainSessionProvider = db.SessionProvider;
-                    AuthenticationManager.MainUserProvider = db.UserProvider;
+                    AuthenticationManager.AddProvider<ISessionProvider>(db.SessionProvider);
+                    AuthenticationManager.AddProvider<IUserProvider>(db.UserProvider);
+                    AuthenticationManager.AddProvider<IUserMapProvider>(db.UserMapProvider);
+                    AuthenticationManager.AddProvider<IPasswordLoginProvider>(db.PasswordLoginProvider);
                     break;
                 case "":
                     Log.Error("Please specify a database type and options using \"database.type\" and \"database\" in the configuration.");
@@ -77,7 +80,7 @@ namespace Quorum
                 host.Start();
                 Log.Info("Listening on {0}", uri);
 
-                Thread.Sleep(-1);
+                System.Threading.Thread.Sleep(-1);
             }
         }
     }

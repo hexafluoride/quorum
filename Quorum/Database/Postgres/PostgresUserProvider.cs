@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Quorum.Database.Postgres
 {
-    public class PostgresUserProvider : IPasswordUserProvider
+    public class PostgresUserProvider : IUserProvider
     {
         public PostgresDatabase Database { get; set; }
 
@@ -17,28 +17,24 @@ namespace Quorum.Database.Postgres
             Database = database;
         }
 
-        public User RetrieveUser(string identifier)
+        public User GetUser(long identifier)
         {
-            if(!int.TryParse(identifier, out int id))
-            {
-                throw new Exception("Unexpected user identifier " + identifier);
-            }
+            var command = new NpgsqlCommand("SELECT * FROM users WHERE uid = @uid");
 
-            var command = new NpgsqlCommand("SELECT * FROM users WHERE id = @id");
+            command.Parameters.Add(new NpgsqlParameter("@uid", identifier));
 
-            command.Parameters.Add(new NpgsqlParameter("@id", id));
             using (var reader = Database.ExecuteReader(command))
             {
                 if (!reader.HasRows)
-                    throw new Exception("Couldn't find user for identifier " + id);
+                    throw new Exception("Couldn't find user with identifier " + identifier);
 
                 reader.Read();
 
-                return new User(reader.GetString(0), "local", reader.GetInt32(3).ToString());
+                return new User(reader.GetInt64(0), reader.GetString(1));
             }
         }
 
-        public User FindUserByUsername(string username)
+        public User GetUser(string username)
         {
             var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username");
 
@@ -50,48 +46,27 @@ namespace Quorum.Database.Postgres
 
                 reader.Read();
 
-                var user = new User(reader.GetString(0), "local", reader.GetInt32(3).ToString());
+                var user = new User(reader.GetInt64(0), reader.GetString(1));
 
                 return user;
             }
         }
 
-        public User AttemptAuthenticate(string username, string password)
+        public User CreateUser(string username)
         {
-            var command = new NpgsqlCommand("SELECT * FROM users WHERE username = @username");
-
-            command.Parameters.Add(new NpgsqlParameter("@username", username));
-            using (var reader = Database.ExecuteReader(command))
-            {
-                if (!reader.HasRows)
-                    return null;
-
-                reader.Read();
-
-                var user = new User(reader.GetString(0), "local", reader.GetInt32(3).ToString());
-
-                if (Pbkdf2CryptConverter.Compare(reader.GetString(1), password))
-                    return user;
-
-                return null;
-            }
-        }
-
-        public void CreateUser(string username, string password, string email)
-        {
-            if (FindUserByUsername(username) != null)
+            if (GetUser(username) != null)
                 throw new Exception("User already exists.");
 
-            var command = new NpgsqlCommand("INSERT INTO users VALUES(@username, @password, @email)");
-            
+            var command = new NpgsqlCommand("INSERT INTO users VALUES(DEFAULT, @username)");
+
             command.Parameters.Add(new NpgsqlParameter("@username", username));
-            command.Parameters.Add(new NpgsqlParameter("@password", Pbkdf2CryptConverter.Encrypt(password)));
-            command.Parameters.Add(new NpgsqlParameter("@email", email));
 
             var added = Database.ExecuteNonQuery(command);
 
             if (added != 1)
                 throw new Exception("Inserted " + added + " rows, expected 1");
+
+            return GetUser(username);
         }
     }
 }

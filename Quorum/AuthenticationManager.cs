@@ -13,12 +13,21 @@ namespace Quorum
 {
     public class AuthenticationManager
     {
-        public static ISessionProvider MainSessionProvider;
-        public static IUserProvider MainUserProvider;
+        public static Dictionary<Type, object> MainProviders = new Dictionary<Type, object>();
+
+        public static T GetProvider<T>()
+        {
+            return (T)MainProviders.First(t => t.Key == typeof(T)).Value;
+        }
+
+        public static void AddProvider<T>(T provider)
+        {
+            MainProviders[typeof(T)] = provider;
+        }
 
         public static void EnableAuthentication(NancyModule module, ISessionProvider provider = null)
         {
-            module.Before.AddItemToStartOfPipeline(GetAuthenticationHandler(provider ?? MainSessionProvider));
+            module.Before.AddItemToStartOfPipeline(GetAuthenticationHandler(provider ?? GetProvider<ISessionProvider>()));
         }
 
         public static Func<NancyContext, CancellationToken, Task<Response>> GetAuthenticationHandler(ISessionProvider provider)

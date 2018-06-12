@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using Quorum.Database.Postgres;
+using Quorum.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +40,16 @@ namespace Quorum
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                     return Response.AsRedirect(error_redirect);
 
-                var real_provider = (AuthenticationManager.MainUserProvider as PostgresUserProvider); // code smell here
+                var user_provider = AuthenticationManager.GetProvider<IUserProvider>();
+                var session_provider = AuthenticationManager.GetProvider<ISessionProvider>();
+                var password_provider = AuthenticationManager.GetProvider<IPasswordLoginProvider>();
+                var user_map_provider = AuthenticationManager.GetProvider<IUserMapProvider>();
 
-                real_provider.CreateUser(username, password, email);
+                var user = user_provider.CreateUser(username);
+                password_provider.CreateLogin(user, username, password, email);
+                user_map_provider.CreateUserMap(user.Identifier, "local", username);
 
-                var session = AuthenticationManager.MainSessionProvider.CreateSession(real_provider.AttemptAuthenticate(username, password));
+                var session = session_provider.CreateSession(password_provider.AttemptAuthenticate(username, password));
                 return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);
 
             }
@@ -64,7 +70,7 @@ namespace Quorum
                 {
                     var session = Context.Items["session"] as Session;
 
-                    AuthenticationManager.MainSessionProvider.DestroySession(session);
+                    AuthenticationManager.GetProvider<ISessionProvider>().DestroySession(session);
                     return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", "", new DateTime(1970, 1, 1));
                 }
             }
@@ -86,19 +92,21 @@ namespace Quorum
 
             try
             {
+                var session_provider = AuthenticationManager.GetProvider<ISessionProvider>();
+
                 if(Context.Items.ContainsKey("session"))
                 {
-                    AuthenticationManager.MainSessionProvider.DestroySession(Context.Items["session"] as Session);
+                    session_provider.DestroySession(Context.Items["session"] as Session);
                 }
 
-                var real_provider = (AuthenticationManager.MainUserProvider as PostgresUserProvider); // code smell here
+                var password_provider = AuthenticationManager.GetProvider<IPasswordLoginProvider>();
 
-                var user = real_provider.AttemptAuthenticate(username, password);
+                var user = password_provider.AttemptAuthenticate(username, password);
 
                 if (user == null)
                     throw new Exception("Failed to authenticate.");
 
-                var session = AuthenticationManager.MainSessionProvider.CreateSession(user);
+                var session = session_provider.CreateSession(user);
                 return Response.AsRedirect(success_redirect).WithCookie("_quorum_auth", session.Id, session.ValidUntil);
 
             }

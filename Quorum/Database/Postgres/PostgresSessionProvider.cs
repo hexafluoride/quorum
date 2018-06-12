@@ -22,13 +22,12 @@ namespace Quorum.Database.Postgres
         {
             var session = new Session(user);
             
-            var command = new NpgsqlCommand("INSERT INTO sessions VALUES(@id, @method, @identifier, @created, @expires)");
+            var command = new NpgsqlCommand("INSERT INTO sessions VALUES(@id, @created, @expires, @uid)");
 
             command.Parameters.Add(new NpgsqlParameter("@id", session.Id));
-            command.Parameters.Add(new NpgsqlParameter("@method", "local"));
-            command.Parameters.Add(new NpgsqlParameter("@identifier", session.User.Identity.Name));
             command.Parameters.Add(new NpgsqlParameter("@created", session.Created));
             command.Parameters.Add(new NpgsqlParameter("@expires", session.ValidUntil));
+            command.Parameters.Add(new NpgsqlParameter("@uid", user.Identifier));
 
             var added = Database.ExecuteNonQuery(command);
 
@@ -55,8 +54,7 @@ namespace Quorum.Database.Postgres
             var command = new NpgsqlCommand("SELECT * FROM sessions WHERE id = @id");
 
             command.Parameters.Add(new NpgsqlParameter("@id", session_id));
-
-            string username = "";
+            
             Session session = new Session();
 
             using (var reader = Database.ExecuteReader(command))
@@ -66,15 +64,10 @@ namespace Quorum.Database.Postgres
 
                 reader.Read();
 
-                if (reader.GetString(1) != "local")
-                {
-                    throw new Exception("Unsupported user authentication method " + reader.GetString(1) + ", was expecting local");
-                }
-
                 session.Id = session_id;
-                session.User = Database.UserProvider.RetrieveUser(reader.GetString(2));
-                session.Created = reader.GetDateTime(3);
-                session.ValidUntil = reader.GetDateTime(4);
+                session.User = Database.UserProvider.GetUser(reader.GetInt64(3));
+                session.Created = reader.GetDateTime(1);
+                session.ValidUntil = reader.GetDateTime(2);
             }
 
             return session;

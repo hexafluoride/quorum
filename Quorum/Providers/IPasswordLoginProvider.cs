@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Quorum.Providers
 {
-    public interface IPasswordUserProvider : IUserProvider
+    public interface IPasswordLoginProvider
     {
+        void CreateLogin(User user, string username, string password, string email);
         User AttemptAuthenticate(string username, string password);
     }
 }

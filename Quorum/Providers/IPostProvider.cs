@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Quorum.Providers
 {
-    public interface IUserProvider
+    public interface IPostProvider
     {
-        User GetUser(long identifier);
-        User GetUser(string username);
-
-        User CreateUser(string username);
+        Post GetPost(long id);
     }
 }

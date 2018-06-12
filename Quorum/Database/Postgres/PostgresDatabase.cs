@@ -20,6 +20,8 @@ namespace Quorum.Database.Postgres
 
         public PostgresSessionProvider SessionProvider { get; set; }
         public PostgresUserProvider UserProvider { get; set; }
+        public PostgresUserMapProvider UserMapProvider { get; set; }
+        public PostgresPasswordLoginProvider PasswordLoginProvider { get; set; }
 
         JObject Settings { get; set; }
 
@@ -31,6 +33,8 @@ namespace Quorum.Database.Postgres
 
             SessionProvider = new PostgresSessionProvider(this);
             UserProvider = new PostgresUserProvider(this);
+            UserMapProvider = new PostgresUserMapProvider(this);
+            PasswordLoginProvider = new PostgresPasswordLoginProvider(this);
 
             OpenConnection();
         }
