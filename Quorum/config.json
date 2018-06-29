@@ -1,4 +1,6 @@
 {
+  // this is obviously an example config, feel free to fill in with details of your setup
+
   "host.type": "self",
   "host.address": "localhost",
   "host.port": 4420,
