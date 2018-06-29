@@ -50,6 +50,9 @@ namespace Quorum
                     AuthenticationManager.AddProvider<IUserProvider>(db.UserProvider);
                     AuthenticationManager.AddProvider<IUserMapProvider>(db.UserMapProvider);
                     AuthenticationManager.AddProvider<IPasswordLoginProvider>(db.PasswordLoginProvider);
+                    AuthenticationManager.AddProvider<IBoardProvider>(db.BoardProvider);
+                    AuthenticationManager.AddProvider<IThreadProvider>(db.ThreadProvider);
+                    AuthenticationManager.AddProvider<IPostProvider>(db.PostProvider);
                     break;
                 case "":
                     Log.Error("Please specify a database type and options using \"database.type\" and \"database\" in the configuration.");

@@ -22,6 +22,9 @@ namespace Quorum.Database.Postgres
         public PostgresUserProvider UserProvider { get; set; }
         public PostgresUserMapProvider UserMapProvider { get; set; }
         public PostgresPasswordLoginProvider PasswordLoginProvider { get; set; }
+        public PostgresBoardProvider BoardProvider { get; set; }
+        public PostgresThreadProvider ThreadProvider { get; set; }
+        public PostgresPostProvider PostProvider { get; set; }
 
         JObject Settings { get; set; }
 
@@ -35,6 +38,9 @@ namespace Quorum.Database.Postgres
             UserProvider = new PostgresUserProvider(this);
             UserMapProvider = new PostgresUserMapProvider(this);
             PasswordLoginProvider = new PostgresPasswordLoginProvider(this);
+            BoardProvider = new PostgresBoardProvider(this);
+            ThreadProvider = new PostgresThreadProvider(this);
+            PostProvider = new PostgresPostProvider(this);
 
             OpenConnection();
         }
@@ -46,6 +52,8 @@ namespace Quorum.Database.Postgres
 
             connection.ConnectionString = Settings["connection.string"].Value<string>();
             connection.Open();
+
+            connection.MapEnum<BoardParentType>();
 
             Connections.Add(connection);
             

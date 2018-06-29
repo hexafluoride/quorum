@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Quorum.Providers
 {
-    public interface IPostProvider
+    interface IThreadProvider
     {
-        Post GetPost(long id);
-        Post[] GetPostsByThread(long thread_id, long start, long count);
+        Thread GetThread(long id);
+        Thread[] GetThreadsByBoardBumpOrdered(long board, long offset, long count);
     }
 }

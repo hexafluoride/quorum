@@ -5,17 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
 namespace Quorum
 {
     public class Post
     {
-        public int Id { get; set; }
-        public Thread Thread { get; set; }
+        public long Id { get; set; }
+        public long Thread { get; set; }
+        public long Board { get; set; }
 
-        public Lazy<User> Author { get; set; }
+        public long Author { get; set; }
 
         public string RawContent { get; set; }
         public string RenderedContent { get; set; }
+        public string Title { get; set; }
+
+        public string Renderer { get; set; }
 
         public DateTime Created { get; set; }
 
@@ -24,16 +30,19 @@ namespace Quorum
 
         }
 
-        public Post(Thread response_to, User author, string content)
+        public Post(long thread, long author, string content, string content_renderer = "markdown")
         {
-            Thread = response_to;
-            Author = new IdentifiedLazy<User>(author.Identifier, delegate { return author; });
-            RawContent = content;
-        }
+            Thread = thread;
+            Author = author;
 
-        public static IdentifiedLazy<Post> CreateLazily(long id, IPostProvider provider)
-        {
-            return new IdentifiedLazy<Post>(id, provider.GetPost);
+            RawContent = content;
+            Renderer = content_renderer;
         }
+    }
+
+    public interface IPostRenderer
+    {
+        string Name { get; }
+        string Render(Post post);
     }
 }

@@ -88,15 +88,18 @@
     <Compile Include="Board.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Database\IDatabase.cs" />
+    <Compile Include="Database\Postgres\PostgresThreadProvider.cs" />
     <Compile Include="Database\Postgres\PostgresBoardProvider.cs" />
     <Compile Include="Database\Postgres\PostgresDatabase.cs" />
     <Compile Include="Database\Postgres\PostgresPasswordLoginProvider.cs" />
+    <Compile Include="Database\Postgres\PostgresPostProvider.cs" />
     <Compile Include="Database\Postgres\PostgresSessionProvider.cs" />
     <Compile Include="Database\Postgres\PostgresUserMapProvider.cs" />
     <Compile Include="Database\Postgres\PostgresUserProvider.cs" />
-    <Compile Include="IdentifiedLazy.cs" />
+    <Compile Include="Database\Extensions.cs" />
     <Compile Include="Post.cs" />
     <Compile Include="Providers\DummySessionProvider.cs" />
+    <Compile Include="Providers\IBoardProvider.cs" />
     <Compile Include="Providers\IPasswordLoginProvider.cs" />
     <Compile Include="Providers\IPostProvider.cs" />
     <Compile Include="Providers\ISessionProvider.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Pbkdf2CryptConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\IThreadProvider.cs" />
     <Compile Include="Providers\IUserMapProvider.cs" />
     <Compile Include="Providers\IUserProvider.cs" />
     <Compile Include="QuorumBootstrapper.cs" />
@@ -218,6 +222,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\register.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\boards.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\board.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\group.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

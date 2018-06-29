@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using NLog;
 using Quorum.Providers;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Quorum
     public class AuthenticationManager
     {
         public static Dictionary<Type, object> MainProviders = new Dictionary<Type, object>();
+        public static Logger Log = LogManager.GetCurrentClassLogger();
 
         public static T GetProvider<T>()
         {
@@ -22,6 +24,11 @@ namespace Quorum
 
         public static void AddProvider<T>(T provider)
         {
+            if(provider == null)
+            {
+                Log.Warn("Added null provider of type {0}", typeof(T));
+            }
+
             MainProviders[typeof(T)] = provider;
         }
 

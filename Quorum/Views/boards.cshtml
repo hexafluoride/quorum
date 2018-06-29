@@ -1,0 +1,43 @@
+﻿@inherits Quorum.QuorumRazorViewBase
+@using System.Security.Principal
+@using System.Security.Claims
+@using System.Linq
+@using Quorum
+
+@{
+    Layout = "master.cshtml";
+}
+
+@*@if (Session != null)
+{
+    <p>You're logged in. Your username is @(Session.User), and your session ID is @(Session.Id). You're authenticated by the provider <code>@Session.User.Identity.AuthenticationType</code>.</p>
+}
+else
+{
+    <p>You're not logged in. Please log in <a href="/login">here</a>.</p>
+}*@
+
+@foreach (var board_group in Model.Groups)
+{
+    <div class="container">
+        <ul class="list-group board-group">
+            <li class="list-group-item">
+                <h3>@board_group.Name</h3>
+                <h5>@board_group.Description</h5>
+            </li>
+
+            @{
+                var boards = ((Board[])Model.Boards).Where(board => board.ParentId == board_group.Id && board.ParentType == BoardParentType.Group).ToArray();
+            }
+
+            @foreach (var board in boards)
+            {
+                <li class="list-group-item"><a href="/@(board.Shorthand ?? "boards/" + board.Id.ToString())">@board.Name</a></li>
+            }
+        </ul>
+    </div>
+}
+
+@section Head {}
+@section ManualContent {}
+@section Scripts {}
