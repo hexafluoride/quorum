@@ -1,3 +1,4 @@
 [submodule "nancy"]
 	path = nancy
-	url = https://github.com/nancyfx/nancy.git
+	url = https://github.com/hexafluoride/nancy.git
+	branch = quorum-changes
