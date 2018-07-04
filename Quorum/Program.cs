@@ -70,6 +70,11 @@ namespace Quorum
 
         static void StartSelfHosting()
         {
+            HostConfiguration host_config = new HostConfiguration()
+            {
+                UrlReservations = new UrlReservations() { CreateAutomatically = true }
+            };
+
             UriBuilder builder = new UriBuilder();
 
             builder.Scheme = "http";
@@ -78,7 +83,7 @@ namespace Quorum
 
             var uri = builder.Uri;
 
-            using (var host = new NancyHost(uri))
+            using (var host = new NancyHost(host_config, uri))
             {
                 host.Start();
                 Log.Info("Listening on {0}", uri);
