@@ -14,27 +14,11 @@ namespace Quorum
 {
     public class AuthenticationManager
     {
-        public static Dictionary<Type, object> MainProviders = new Dictionary<Type, object>();
         public static Logger Log = LogManager.GetCurrentClassLogger();
-
-        public static T GetProvider<T>()
-        {
-            return (T)MainProviders.First(t => t.Key == typeof(T)).Value;
-        }
-
-        public static void AddProvider<T>(T provider)
-        {
-            if(provider == null)
-            {
-                Log.Warn("Added null provider of type {0}", typeof(T));
-            }
-
-            MainProviders[typeof(T)] = provider;
-        }
 
         public static void EnableAuthentication(NancyModule module, ISessionProvider provider = null)
         {
-            module.Before.AddItemToStartOfPipeline(GetAuthenticationHandler(provider ?? GetProvider<ISessionProvider>()));
+            module.Before.AddItemToStartOfPipeline(GetAuthenticationHandler(provider ?? ProviderStore.GetProvider<ISessionProvider>()));
         }
 
         public static Func<NancyContext, CancellationToken, Task<Response>> GetAuthenticationHandler(ISessionProvider provider)

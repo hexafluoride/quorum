@@ -10,5 +10,10 @@ namespace Quorum.Providers
     {
         Thread GetThread(long id);
         Thread[] GetThreadsByBoardBumpOrdered(long board, long offset, long count);
+
+        long CreateThread();
+        long CreateThread(long opening_post);
+        long CreateThread(long opening_post, long board);
+        bool UpdateThread(long thread_id, Thread thread);
     }
 }

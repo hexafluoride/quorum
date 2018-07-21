@@ -46,13 +46,15 @@ namespace Quorum
             {
                 case "postgres":
                     var db = new PostgresDatabase(Config.GetValue<JObject>("database"));
-                    AuthenticationManager.AddProvider<ISessionProvider>(db.SessionProvider);
-                    AuthenticationManager.AddProvider<IUserProvider>(db.UserProvider);
-                    AuthenticationManager.AddProvider<IUserMapProvider>(db.UserMapProvider);
-                    AuthenticationManager.AddProvider<IPasswordLoginProvider>(db.PasswordLoginProvider);
-                    AuthenticationManager.AddProvider<IBoardProvider>(db.BoardProvider);
-                    AuthenticationManager.AddProvider<IThreadProvider>(db.ThreadProvider);
-                    AuthenticationManager.AddProvider<IPostProvider>(db.PostProvider);
+
+                    ProviderStore.AddProvider<ISessionProvider>(db.SessionProvider);
+                    ProviderStore.AddProvider<IUserProvider>(db.UserProvider);
+                    ProviderStore.AddProvider<IUserMapProvider>(db.UserMapProvider);
+                    ProviderStore.AddProvider<IPasswordLoginProvider>(db.PasswordLoginProvider);
+                    ProviderStore.AddProvider<IBoardProvider>(db.BoardProvider);
+                    ProviderStore.AddProvider<IThreadProvider>(db.ThreadProvider);
+                    ProviderStore.AddProvider<IPostProvider>(db.PostProvider);
+
                     break;
                 case "":
                     Log.Error("Please specify a database type and options using \"database.type\" and \"database\" in the configuration.");

@@ -79,5 +79,43 @@ namespace Quorum.Database.Postgres
 
             return thread;
         }
+
+        public long CreateThread()
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO threads VALUES(DEFAULT, DEFAULT, DEFAULT, DEFAULT, '') RETURNING id");
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public long CreateThread(long opening_post)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO threads VALUES(DEFAULT, DEFAULT, @post, @post, '') RETURNING id");
+
+            command.Parameters.AddWithValue("@post", opening_post);
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public long CreateThread(long opening_post, long board)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO threads VALUES(DEFAULT, @board, @post, @post, '') RETURNING id");
+
+            command.Parameters.AddWithValue("@board", board);
+            command.Parameters.AddWithValue("@post", opening_post);
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public bool UpdateThread(long thread_id, Thread thread)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("UPDATE threads SET (board, opening_post, last_post, title) = (@board, @opening_post, @last_post, @title)");
+
+            command.Parameters.AddWithValue("@board", thread.Board);
+            command.Parameters.AddWithValue("@opening_post", thread.OpeningPost);
+            command.Parameters.AddWithValue("@last_post", thread.LastPost);
+            command.Parameters.AddWithValue("@title", thread.Title);
+
+            return Database.ExecuteNonQuery(command) == 1;
+        }
     }
 }

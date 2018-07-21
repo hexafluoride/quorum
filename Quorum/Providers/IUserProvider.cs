@@ -11,6 +11,7 @@ namespace Quorum.Providers
         User GetUser(long identifier);
         User GetUser(string username);
 
-        User CreateUser(string username);
+        long CreateUser(string username);
+        bool UpdateUser(long user_id, User user);
     }
 }

@@ -2,6 +2,7 @@
 using Quorum.Providers;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace Quorum.Database.Postgres
 
                 reader.Read();
 
-                return new User(reader.GetInt64(0), reader.GetString(1));
+                return FromReader(reader);
             }
         }
 
@@ -46,27 +47,42 @@ namespace Quorum.Database.Postgres
 
                 reader.Read();
 
-                var user = new User(reader.GetInt64(0), reader.GetString(1));
-
-                return user;
+                return FromReader(reader);
             }
         }
 
-        public User CreateUser(string username)
+        public long CreateUser(string username)
         {
             if (GetUser(username) != null)
                 throw new Exception("User already exists.");
 
-            var command = new NpgsqlCommand("INSERT INTO users VALUES(DEFAULT, @username)");
+            var command = new NpgsqlCommand("INSERT INTO users VALUES(DEFAULT, @username) RETURNING uid");
 
             command.Parameters.Add(new NpgsqlParameter("@username", username));
 
-            var added = Database.ExecuteNonQuery(command);
+            return Database.ExecuteNonQuery(command);
+        }
 
-            if (added != 1)
-                throw new Exception("Inserted " + added + " rows, expected 1");
+        public bool UpdateUser(long user_id, User user)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("UPDATE users SET (username, bio) = (@username, @bio)");
 
-            return GetUser(username);
+            command.Parameters.AddWithValue("@username", user.Username);
+            command.Parameters.AddWithValue("@bio", user.Bio);
+
+            return Database.ExecuteNonQuery(command) == 1;
+        }
+
+        private User FromReader(DbDataReader reader)
+        {
+            if (!reader.HasRows)
+                return null;
+
+            User user = new User(reader.GetString(1));
+            user.Identifier = reader.GetInt64(0);
+            user.Bio = reader.GetString(2);
+
+            return user;
         }
     }
 }

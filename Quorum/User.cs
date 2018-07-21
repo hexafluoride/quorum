@@ -12,6 +12,7 @@ namespace Quorum
     {
         public long Identifier { get; set; }
         public string Username { get => FindFirst("Username")?.Value; }
+        public string Bio { get; set; }
 
         public User(long identifier, string username)
         {

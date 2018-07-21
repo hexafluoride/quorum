@@ -12,6 +12,7 @@ namespace Quorum
         public long Board { get; set; }
 
         public long OpeningPost { get; set; }
+        public long LastPost { get; set; }
 
         public string Title { get; set; }
 

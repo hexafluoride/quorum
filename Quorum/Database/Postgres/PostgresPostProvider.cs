@@ -52,6 +52,30 @@ namespace Quorum.Database.Postgres
             return posts.ToArray();
         }
 
+        public long CreatePost()
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO posts VALUES(DEFAULT, DEFAULT, DEFAULT, '', '', DEFAULT, DEFAULT, '', '') RETURNING id");
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public bool UpdatePost(long post_id, Post post)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("UPDATE posts SET " +
+                "(author, thread, content, content_type, board, rendered_content, title) = " +
+                "(@author, @thread, @content, @content_type, @board, @rendered_content, @title)");
+
+            command.Parameters.AddWithValue("@author", post.Author);
+            command.Parameters.AddWithValue("@thread", post.Thread);
+            command.Parameters.AddWithValue("@content", post.RawContent);
+            command.Parameters.AddWithValue("@content_type", post.Renderer);
+            command.Parameters.AddWithValue("@board", post.Board);
+            command.Parameters.AddWithValue("@rendered_content", post.RenderedContent);
+            command.Parameters.AddWithValue("@title", post.Title);
+
+            return Database.ExecuteNonQuery(command) == 1;
+        }
+
         private Post FromReader(DbDataReader reader)
         {
             if (!reader.HasRows)

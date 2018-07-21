@@ -135,6 +135,50 @@ namespace Quorum.Database.Postgres
             return groups.ToArray();
         }
 
+        public long CreateBoard(string name, BoardParentType parent_type, long parent)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO boards VALUES(DEFAULT, @name, DEFAULT, @type, @parent, DEFAULT) RETURNING id");
+
+            command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@type", parent_type);
+            command.Parameters.AddWithValue("@parent", parent);
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public bool UpdateBoard(long id, Board board)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("UPDATE boards SET (name, description, parent_type, parent, alias) = (@name, @description, @parent_type, @parent, @alias)");
+
+            command.Parameters.AddWithValue("@name", board.Name);
+            command.Parameters.AddWithValue("@description", board.Description);
+            command.Parameters.AddWithValue("@parent_type", board.ParentType);
+            command.Parameters.AddWithValue("@parent", board.ParentId);
+            command.Parameters.AddWithValue("@alias", board.Shorthand);
+
+            return Database.ExecuteNonQuery(command) == 1;
+        }
+
+        public long CreateBoardGroup(string name)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO board_groups VALUES (DEFAULT, @name, DEFAULT, -1) RETURNING id");
+
+            command.Parameters.AddWithValue("@name", name);
+
+            return Database.ExecuteNonQuery(command);
+        }
+
+        public bool UpdateBoardGroup(long id, BoardGroup group)
+        {
+            NpgsqlCommand command = new NpgsqlCommand("UPDATE board_groups SET (name, description, parent) = (@name, @description, @parent)");
+
+            command.Parameters.AddWithValue("@name", group.Name);
+            command.Parameters.AddWithValue("@description", group.Description);
+            command.Parameters.AddWithValue("@parent", group.ParentId);
+
+            return Database.ExecuteNonQuery(command) == 1;
+        }
+
         private Board FromReader(DbDataReader reader)
         {
             if (!reader.HasRows)
