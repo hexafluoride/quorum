@@ -8,35 +8,26 @@
     Layout = "master.cshtml";
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        @{ 
-        foreach (var crumb in Model.Crumbs)
+@Html.Partial("breadcrumbs", Model)
+
+<div class="container">
+    <ul class="list-group board-group">
+        <li class="list-group-item">
+            <h3>@Model.Board.Name</h3>
+            <h5>@Model.Board.Description</h5>
+        </li>
+
+        @foreach (var board in Model.Boards)
         {
-            <li class="breadcrumb-item"><a href="@crumb.Value">@crumb.Key</a></li>
+            <li class="list-group-item"><a href="/@(board.Shorthand ?? "boards/" + board.Id.ToString())">@board.Name</a></li>
         }
+
+        @foreach (var thread in Model.Threads)
+        {
+            <li class="list-group-item"><a href="/threads/@thread.Id">@thread.Title</a></li>
         }
-    </ol>
-</nav>
-
-    <div class="container">
-        <ul class="list-group board-group">
-            <li class="list-group-item">
-                <h3>@Model.Board.Name</h3>
-                <h5>@Model.Board.Description</h5>
-            </li>
-
-            @foreach (var board in Model.Boards)
-            {
-                <li class="list-group-item"><a href="/@(board.Shorthand ?? "boards/" + board.Id.ToString())">@board.Name</a></li>
-            }
-
-            @foreach (var thread in Model.Threads)
-            {
-                <li class="list-group-item"><a href="/threads/@thread.Id">@thread.Title</a></li>
-            }
-        </ul>
-    </div>
+    </ul>
+</div>
 
 @section Head {
     <style>

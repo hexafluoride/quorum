@@ -1,0 +1,13 @@
+﻿@inherits Quorum.QuorumRazorViewBase
+
+@* breadcrumbs *@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        @{
+            foreach (var crumb in Model.Crumbs)
+            {
+                <li class="breadcrumb-item"><a href="@crumb.Value">@crumb.Key</a></li>
+            }
+        }
+    </ol>
+</nav>  
