@@ -44,6 +44,7 @@ authenticate a particular user. Here is what an example workflow may look like:
 Forums and posting
 ------------------
 
+This section goes into detail on the abstract workings of the forum.
 A single installation of the Quorum software can be referred to as a “forum”,
 which can be represented as a set of boards. In turn, boards can be represented
 as an ordered sequence of boards and threads, typically arranged by last post
@@ -96,6 +97,13 @@ to preapproved users or everyone, et cetera.
 Boards are required to have a name and a description. They may have a shorthand
 identifier (such as /r9k/) that can be used in URLs.
 
+### Board groups
+
+A board group is a utility that is used to logically section boards apart. Each
+board is either contained by another board or by a board group. Board groups are
+either orphans(contained at the root of the virtual tree of boards and board
+groups) or parented by another board group.
+
 ### Thread creation
 
 Threads are created and appended to boards. The interface that allows for thread
@@ -111,3 +119,49 @@ different markup languages, such as Markdown or BBcode. Post creation can be
 restricted using traditional access control paradigms, with the addition of
 thread owners also being able to restrict certain users from posting in their
 threads.
+
+---
+
+## Features specific to Wetfish Forums
+
+This section contains previews of features that are mostly specific to Wetfish 
+Forums, and are (to-be-)implemented using plugins.
+
+Mockups will appear here.
+
+### Coral
+
+Coral is a cryptocurrency that is issued by the forums as part of a posting
+reward scheme. Coral may be used to buy and sell customization items(see [Fish 
+avatars](#Fish_avatars)), tip other users for their posts, or as a general-use 
+currency. Coral is an asset hosted on the Stellar network.
+
+### Fish avatars
+
+One of the unique features part of the first iteration of the Wetfish Forums are
+customizable fish avatars, featuring different items that can be added onto your
+virtual avatar. The new Wetfish Forums backed by Quorum expands on this concept
+by hosting data related to a user's avatar on the Stellar network,
+introducing an additional degree of freedom and decentralization. As part of
+this feature, users can equip, remove, and trade items on the decentralized
+Stellar network itself. The specific implementation of this feature will use an
+NFT framework for the Stellar network(currently unnamed and unreleased, however 
+see [coral.topkek.party](http://coral.topkek.party/) for a WIP proof of concept)
+
+### Cross-board backlinking
+This feature is not specific to Wetfish Forums, as it will be implemented in
+Quorum itself, and the idea is taken from various imageboards already in place.
+Using the convenient property that posts can be globally identified and 
+referenced, Quorum posts can reference other posts, regardless whether they're
+in different threads or even different boards. The interface for this feature 
+would:
+
+-    Allow users to hover over backlinks to display a preview
+
+-    Click on posts to expand them inline
+
+-    View the list of posts that reference a specific post, divided by posts
+     that are in the same thread, posts that are in the same board, and posts 
+	 that are on different boards.
+
+-    Automatically recognize and create backlinks using the syntax >>`post_id`
