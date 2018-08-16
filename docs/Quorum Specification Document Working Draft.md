@@ -41,6 +41,29 @@ authenticate a particular user. Here is what an example workflow may look like:
 
 ![Figure 1](figure-01.png)
 
+### Registration
+
+By default, Quorum requires a minimal amount of information to register and  
+employs no vetting/spam mitigation. However, Quorum can be configured to deal 
+with potential spammers and bots using a multitude of ways, including:
+
+-   Requiring registrants to solve a CAPTCHA
+
+-   Requiring email confirmation
+
+-   Javascript Proof of Work
+
+-   Requiring admins to confirm each registration before accounts are active
+
+-   An invite system
+
+### Anonymous users
+
+Quorum can be configured to allow anonymous users to post. Internally, anonymous
+ authors are tracked using their IP address for the purposes of spam prevention 
+and moderation. Additionally, anonymous users are subjected to extra spam 
+prevention measures, such as CAPTCHAs and stricter rate limits.
+
 Forums and posting
 ------------------
 
@@ -59,6 +82,9 @@ privileges such as banning and unbanning certain users from posting in the
 thread. A thread is generally expected to be centered around a certain topic,
 and its representation reflects the social process of conversation, of which
 linear progression is a natural model.
+
+Posting in a thread normally "bumps" the thread to the front of the board. Users
+ can opt out of this behavior, also referred to as "saging".
 
 ### Posts
 
@@ -96,6 +122,9 @@ to preapproved users or everyone, et cetera.
 
 Boards are required to have a name and a description. They may have a shorthand
 identifier (such as /r9k/) that can be used in URLs.
+
+Boards can be configured to have limits on thread count, and post count per 
+thread(in the form of restricting bumps after a certain number of posts).
 
 ### Board groups
 
