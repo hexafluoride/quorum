@@ -149,6 +149,107 @@ restricted using traditional access control paradigms, with the addition of
 thread owners also being able to restrict certain users from posting in their
 threads.
 
+Permissions
+-----------
+
+_This is the vision I have for a flexible permissioning system. This might get 
+replaced by a more traditional approach, based on **your** feedback!_
+
+## Permissioning
+
+Quorum permissions are built upon the key concepts of _actions_, _scopes_ and 
+_transactions_.
+
+### Actions
+
+An _action_ is basically what the name says, it represents a function that can 
+bring a change to the state of Quorum. Examples of actions include creating a 
+post, banning a user or changing an avatar.
+
+### Scopes
+
+Scopes are the subjects of actions. Examples of scopes corresponding to the 
+action examples include the thread that is being posted to, the user being 
+banned and the user getting its avatar changed.
+
+### Transactions
+
+Transactions are specific instances of actions. They can be thought of as 
+function calls in that they represent a particular combination of an action, 
+a caller, one or many scopes and a set of arguments.
+
+A transaction is either permitted or denied, and this decision is made according
+ to permission rules.
+
+### Permission rules
+
+Permission rules are 4-tuples of an action, a scope, a source and the given 
+permission for the action-scope-source combination(grant/deny). When a 
+transaction is being considered for application, Quorum walks through all of the
+ permission rules that match the source, action, and all of the scopes under one 
+scope type in the transaction. These rules are then ranked by _specificity_, and
+ the most specific rule determines whether the transaction is applied or not.
+
+Example: the user "rachel" creating a new post in the thread 30 would be 
+represented by the following transaction:
+
+    "transaction": {
+		"source": { "uid": 2 },
+		"scopes": [
+		    { "type": "board_group", "id": 10 },
+		    { "type": "board", "id": 20 },
+		    { "type": "thread", "id": 30 },
+		],
+		"action": "ACTION_POST"
+	}
+
+With a permission table that looks like this(simplified for example):
+
+| Source | Action      | Scope                               | Permission |
+|--------|-------------|-------------------------------------|------------|
+| rachel | ACTION_POST | *                                   | GRANT      |
+| rachel | ACTION_POST | { "type": "board_group", "id": 10 } | GRANT      |
+| rachel | ACTION_POST | { "type": "board", "id": 20 }       | DENY       |
+| rachel | ACTION_POST | { "type": "thread", "id": 30 }      | GRANT      |
+| Emcy   | ACTION_BAN  | *                                   | DENY       |
+| Emcy   | ACTION_BAN  | { "type": "role", "id": 1 }         | GRANT      |
+
+The most specific permission entry for the action ACTION_POST is in the 4th row,
+ which lets rachel post in the thread 10, even though it appears that rachel has
+ been forbidden from posting on the board 20. This makes sense because posting 
+in any other thread in the board 20 is still forbidden, as the most specific 
+rule in that case is the one in the line 2, which denies her from posting in 
+that board. The special scope "*" is used to denote a default permission level 
+that works across all scopes, of course as long as there are no other permission 
+ entries that concern that scope.
+
+The user "Emcy" banning the user "h"(uid 4, roles include role 1 and 2) would be 
+ represented as:
+
+    "transaction": {
+		"source": { "uid": 3 },
+		"scopes": [
+			{ "type": "role", "id": 1 },
+			{ "type": "role", "id": 2 },
+		    { "type": "user", "uid": 4 }
+		],
+		"action": "ACTION_BAN"
+	}
+
+In this example, we can see that Emcy is allowed to ban anyone with the role of 
+1, however, there are multiple scopes that have the type of "role". In a 
+scenario like this, all scopes under a single type must be granted in order for 
+the transaction to be granted. This can be visualized like:
+
+    "scopes": [
+		{ "type": "role", "id": [1, 2] },
+		{ "type": "user", "uid": 4}
+	]
+	
+Since are no entries that let Emcy ban someone with a role of 2, this  
+transaction would be denied. Scopes that have the same type are treated like a 
+single scope that fails if any one of the sub-scopes fail.
+
 ---
 
 ## Features specific to Wetfish Forums
