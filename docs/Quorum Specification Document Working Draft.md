@@ -215,7 +215,7 @@ With a permission table that looks like this(simplified for example):
 | Emcy   | ACTION_BAN  | { "type": "role", "id": 1 }         | GRANT      |
 
 The most specific permission entry for the action ACTION_POST is in the 4th row,
- which lets rachel post in the thread 10, even though it appears that rachel has
+ which lets rachel post in the thread 30, even though it appears that rachel has
  been forbidden from posting on the board 20. This makes sense because posting 
 in any other thread in the board 20 is still forbidden, as the most specific 
 rule in that case is the one in the line 2, which denies her from posting in 
