@@ -178,13 +178,13 @@ Transactions are specific instances of actions. They can be thought of as
 function calls in that they represent a particular combination of an action, 
 a caller, one or many scopes and a set of arguments.
 
-A transaction is either permitted or denied, and this decision is made according
+A transaction is either granted or denied, and this decision is made according
  to permission rules.
 
 ### Permission rules
 
-Permission rules are 4-tuples of an action, a scope, a source and the given 
-permission for the action-scope-source combination(grant/deny). When a 
+Permission rules are 4-tuples of a source, an action, a scope and the given 
+permission for the source-action-scope combination(grant/deny). When a 
 transaction is being considered for application, Quorum walks through all of the
  permission rules that match the source, action, and all of the scopes under one 
 scope type in the transaction. These rules are then ranked by _specificity_, and
@@ -194,14 +194,14 @@ Example: the user "rachel" creating a new post in the thread 30 would be
 represented by the following transaction:
 
     "transaction": {
-		"source": { "uid": 2 },
-		"scopes": [
-		    { "type": "board_group", "id": 10 },
-		    { "type": "board", "id": 20 },
-		    { "type": "thread", "id": 30 },
-		],
-		"action": "ACTION_POST"
-	}
+        "source": { "uid": 2 },
+        "scopes": [
+            { "type": "board_group", "id": 10 },
+            { "type": "board", "id": 20 },
+            { "type": "thread", "id": 30 },
+        ],
+        "action": "ACTION_POST"
+    }
 
 With a permission table that looks like this(simplified for example):
 
@@ -227,14 +227,14 @@ The user "Emcy" banning the user "h"(uid 4, roles include role 1 and 2) would be
  represented as:
 
     "transaction": {
-		"source": { "uid": 3 },
-		"scopes": [
-			{ "type": "role", "id": 1 },
-			{ "type": "role", "id": 2 },
-		    { "type": "user", "uid": 4 }
-		],
-		"action": "ACTION_BAN"
-	}
+        "source": { "uid": 3 },
+        "scopes": [
+            { "type": "role", "id": 1 },
+            { "type": "role", "id": 2 },
+            { "type": "user", "uid": 4 }
+        ],
+        "action": "ACTION_BAN"
+    }
 
 In this example, we can see that Emcy is allowed to ban anyone with the role of 
 1, however, there are multiple scopes that have the type of "role". In a 
@@ -242,10 +242,10 @@ scenario like this, all scopes under a single type must be granted in order for
 the transaction to be granted. This can be visualized like:
 
     "scopes": [
-		{ "type": "role", "id": [1, 2] },
-		{ "type": "user", "uid": 4}
-	]
-	
+        { "type": "role", "id": [1, 2] },
+        { "type": "user", "uid": 4}
+    ]
+    
 Since are no entries that let Emcy ban someone with a role of 2, this  
 transaction would be denied. Scopes that have the same type are treated like a 
 single scope that fails if any one of the sub-scopes fail.
@@ -292,6 +292,6 @@ would:
 
 -    View the list of posts that reference a specific post, divided by posts
      that are in the same thread, posts that are in the same board, and posts 
-	 that are on different boards.
+     that are on different boards.
 
 -    Automatically recognize and create backlinks using the syntax >>`post_id`
