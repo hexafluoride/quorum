@@ -64,6 +64,17 @@ Quorum can be configured to allow anonymous users to post. Internally, anonymous
 and moderation. Additionally, anonymous users are subjected to extra spam 
 prevention measures, such as CAPTCHAs and stricter rate limits.
 
+### User profiles
+
+Each user has a profile that consists of information related to the user, such 
+as the user's full name, avatar, bio, contact information, etc. Most of these 
+fields are optional.
+
+Additionally, Quorum plugins can store user-specific data in the user's profile 
+for the purposes of letting Quorum handle user data and optionally displaying 
+the data in a meaningful manner across the forum interface. One example would 
+be the Fish avatars plugin that supersedes the forum avatar feature.
+
 Forums and posting
 ------------------
 
@@ -85,6 +96,14 @@ linear progression is a natural model.
 
 Posting in a thread normally "bumps" the thread to the front of the board. Users
  can opt out of this behavior, also referred to as "saging".
+ 
+#### Thread creation
+
+Threads are created and appended to boards. The interface that allows for thread
+creation is virtually identical to that of post creation, with the exception
+that the newly created post is used as the opening post of the thread to be
+created. Thread creation can be restricted to certain user roles on a per-board
+basis.
 
 ### Posts
 
@@ -106,6 +125,21 @@ incremented by one after each successful post. This identifier can be used to
 refer to posts, also called backlinking and quoting, from the originating thread
 or from other threads, possibly from other boards as well. The global counter
 cannot decrease, and post deletion leaves a gap in the sequence.
+
+#### Post content
+
+Posts contain rich text with support for formatting text and embedding media. 
+Embedded media is handled by media support plugins that convert an embedded 
+media identifier(such as a URL to a YouTube video) to an inline display. 
+Furthermore, Quorum can also be configured to host media files for users.
+
+#### Post creation
+
+Posts are appended to threads. The interface for post creation lets users use
+different markup languages, such as Markdown or BBcode. Post creation can be
+restricted using traditional access control paradigms, with the addition of
+thread owners also being able to restrict certain users from posting in their
+threads.
 
 ### Boards
 
@@ -133,21 +167,6 @@ board is either contained by another board or by a board group. Board groups are
 either orphans(contained at the root of the virtual tree of boards and board
 groups) or parented by another board group.
 
-### Thread creation
-
-Threads are created and appended to boards. The interface that allows for thread
-creation is virtually identical to that of post creation, with the exception
-that the newly created post is used as the opening post of the thread to be
-created. Thread creation can be restricted to certain user roles on a per-board
-basis.
-
-### Post creation
-
-Posts are appended to threads. The interface for post creation lets users use
-different markup languages, such as Markdown or BBcode. Post creation can be
-restricted using traditional access control paradigms, with the addition of
-thread owners also being able to restrict certain users from posting in their
-threads.
 
 Permissions
 -----------
@@ -203,6 +222,9 @@ represented by the following transaction:
         "action": "ACTION_POST"
     }
 
+__Note: this structure is solely for the purpose of visualizing the permission 
+process.__
+
 With a permission table that looks like this(simplified for example):
 
 | Source | Action      | Scope                               | Permission |
@@ -246,7 +268,7 @@ the transaction to be granted. This can be visualized like:
         { "type": "user", "uid": 4}
     ]
     
-Since are no entries that let Emcy ban someone with a role of 2, this  
+Since are no entries that let Emcy ban someone with a role of 2, this 
 transaction would be denied. Scopes that have the same type are treated like a 
 single scope that fails if any one of the sub-scopes fail.
 
@@ -279,6 +301,7 @@ NFT framework for the Stellar network(currently unnamed and unreleased, however
 see [coral.topkek.party](http://coral.topkek.party/) for a WIP proof of concept)
 
 ### Cross-board backlinking
+
 This feature is not specific to Wetfish Forums, as it will be implemented in
 Quorum itself, and the idea is taken from various imageboards already in place.
 Using the convenient property that posts can be globally identified and 
@@ -295,3 +318,14 @@ would:
      that are on different boards.
 
 -    Automatically recognize and create backlinks using the syntax >>`post_id`
+
+### Banning users from own threads
+
+Thread authors can ban users from threads they create. This is implemented via 
+a plugin that lets thread authors add a permission that looks like: 
+
+| Source | Action      | Scope                               | Permission |
+|--------|-------------|-------------------------------------|------------|
+| target | ACTION_POST | { "type": "thread", "id": 3 }       | DENY       |
+
+Where `target` is the user to ban.
