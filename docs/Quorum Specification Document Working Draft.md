@@ -5,22 +5,21 @@ title: Quorum Specification Document Working Draft
 Introduction
 ============
 
-Quorum is feature-rich forum software. Quorum’s attractive features include a
-flexible, lightweight, and modular architecture, granular access control,
-support for multiple database backends and authentication protocols, and high
-performance. Quorum uses various technologies to implement its functionality;
+Quorum is high performance forum software. Quorum’s features include
+a lightweight modular architecture, granular access control, and
+support for multiple database backends / authentication protocols. 
+Quorum uses various technologies to implement its functionality;
 for an overview, please see [Technologies](#technologies).
 
 Technologies
 ============
 
-The main Quorum codebase is built on top of Nancy. Nancy is a web framework
+The core Quorum codebase is built on top of Nancy. Nancy is a web framework
 written in C\# that prioritizes code clarity. Other software that is closely
-involved with Quorum include Razor, PostgreSQL, and Bootstrap. Currently, only
-PostgreSQL is supported as a database backend, however, since the database
-implementation is quite modularized and abstract, any other backend may be
-implemented with ease. Particularly, any database library that exposes an
-ADO.NET interface is an easy target for porting.
+involved with Quorum include Razor, PostgreSQL, and Bootstrap. Currently only
+PostgreSQL is supported as a database backend, however in the future any other 
+backend may be implemented with ease. Particularly any database library that
+exposes an ADO.NET interface is an easy target for porting.
 
 Planned support includes compatibility with OpenID Connect as a user/session
 provider.
