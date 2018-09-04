@@ -1,4 +1,4 @@
 # Quorum
 High-performance forum software
 
-[Specification (Working Draft)](docs/Quorum Specification Document Working Draft.md)
+[Specification](docs/Quorum%20Specification%20Document%20Working%20Draft.md) (Working Draft)
