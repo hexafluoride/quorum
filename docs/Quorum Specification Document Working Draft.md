@@ -47,13 +47,9 @@ employs no vetting/spam mitigation. However, Quorum can be configured to deal
 with potential spammers and bots using a multitude of ways, including:
 
 -   Requiring registrants to solve a CAPTCHA
-
 -   Requiring email confirmation
-
 -   Javascript Proof of Work
-
--   Requiring admins to confirm each registration before accounts are active
-
+-   Requiring admins to confirm each registration before accounts are active  
 -   An invite system
 
 ### Anonymous users
@@ -109,13 +105,9 @@ basis.
 Posts are the building block of discussion. Posts contain the following data:
 
 -   Post content (in Markdown, BBcode, etc.)
-
 -   Post title
-
 -   Author
-
 -   Creation date
-
 -   Last edit date
 
 Posts are represented by globally unique numeric identifiers that are consistent
@@ -165,6 +157,21 @@ A board group is a utility that is used to logically section boards apart. Each
 board is either contained by another board or by a board group. Board groups are
 either orphans(contained at the root of the virtual tree of boards and board
 groups) or parented by another board group.
+
+### Cross-board backlinking
+
+This idea is taken from various imageboards already in place.
+Using the convenient property that posts can be globally identified and 
+referenced, Quorum posts can reference other posts, regardless whether they're
+in different threads or even different boards. The interface for this feature 
+would:
+
+-    Allow users to hover over backlinks to display a preview
+-    Click on posts to expand them inline
+-    View the list of posts that reference a specific post, divided by posts
+     that are in the same thread, posts that are in the same board, and posts 
+     that are on different boards.
+-    Automatically recognize and create backlinks using the syntax >>`post_id`
 
 
 Permissions
@@ -298,25 +305,6 @@ this feature, users can equip, remove, and trade items on the decentralized
 Stellar network itself. The specific implementation of this feature will use an
 NFT framework for the Stellar network(currently unnamed and unreleased, however 
 see [coral.topkek.party](http://coral.topkek.party/) for a WIP proof of concept)
-
-### Cross-board backlinking
-
-This feature is not specific to Wetfish Forums, as it will be implemented in
-Quorum itself, and the idea is taken from various imageboards already in place.
-Using the convenient property that posts can be globally identified and 
-referenced, Quorum posts can reference other posts, regardless whether they're
-in different threads or even different boards. The interface for this feature 
-would:
-
--    Allow users to hover over backlinks to display a preview
-
--    Click on posts to expand them inline
-
--    View the list of posts that reference a specific post, divided by posts
-     that are in the same thread, posts that are in the same board, and posts 
-     that are on different boards.
-
--    Automatically recognize and create backlinks using the syntax >>`post_id`
 
 ### Banning users from own threads
 
